@@ -9,12 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace App\Http\Controllers;
+use Database\Factories\PostFactory;
+use Illuminate\Database\Seeder;
 
-use Jiannei\Response\Laravel\ResponseTrait;
-use Laravel\Lumen\Routing\Controller as BaseController;
-
-class Controller extends BaseController
+class PostsSeeder extends Seeder
 {
-    use ResponseTrait;
+    public function run()
+    {
+        PostFactory::new()->count(1000)->create();
+    }
 }

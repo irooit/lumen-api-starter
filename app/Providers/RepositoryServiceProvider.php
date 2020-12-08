@@ -11,22 +11,16 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Prettus\Repository\Providers\LumenRepositoryServiceProvider;
 
-class RepositoryServiceProvider extends ServiceProvider
+class RepositoryServiceProvider extends LumenRepositoryServiceProvider
 {
-    /**
-     * Register services.
-     */
-    public function register()
-    {
-    }
-
     /**
      * Bootstrap services.
      */
     public function boot()
     {
         $this->app->bind(\App\Contracts\Repositories\UserRepository::class, \App\Repositories\Eloquent\UserRepositoryEloquent::class);
+        $this->app->bind(\App\Contracts\Repositories\PostRepository::class, \App\Repositories\Eloquent\PostRepositoryEloquent::class);
     }
 }

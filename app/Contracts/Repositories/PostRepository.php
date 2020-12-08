@@ -9,12 +9,14 @@
  * with this source code in the file LICENSE.
  */
 
-namespace App\Http\Controllers;
+namespace App\Contracts\Repositories;
 
-use Jiannei\Response\Laravel\ResponseTrait;
-use Laravel\Lumen\Routing\Controller as BaseController;
+use Prettus\Repository\Contracts\RepositoryInterface;
 
-class Controller extends BaseController
+/**
+ * Interface PostRepository.
+ */
+interface PostRepository extends RepositoryInterface
 {
-    use ResponseTrait;
+    //
 }

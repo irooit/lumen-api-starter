@@ -9,13 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-use App\Providers\EnumServiceProvider;
-use App\Providers\QueryLoggerServiceProvider;
-use App\Providers\RepositoryServiceProvider;
-use Illuminate\Redis\RedisServiceProvider;
-use Prettus\Repository\Providers\LumenRepositoryServiceProvider;
-use Tymon\JWTAuth\Providers\LumenServiceProvider;
-
 require_once __DIR__.'/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -89,6 +82,10 @@ $app->configure('services');
 $app->configure('views');
 $app->configure('repository');
 $app->configure('enum');
+$app->configure('permission');
+$app->configure('response');
+
+$app->alias('cache', \Illuminate\Cache\CacheManager::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -106,13 +103,16 @@ $app->configure('enum');
 // ]);
 
 $app->middleware([
-    App\Http\Middleware\AcceptHeader::class,
-    App\Http\Middleware\EtagMiddleware::class,
+    \Jiannei\Logger\Laravel\Http\Middleware\RequestLog::class,
+    \Jiannei\Response\Laravel\Http\Middleware\Etag::class,
 ]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'enum' => App\Http\Middleware\TransformEnums::class,
+    'enum' => \Jiannei\Enum\Laravel\Http\Middleware\TransformEnums::class,
+    'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+    'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+    'throttle' => \Jiannei\Response\Laravel\Http\Middleware\ThrottleRequests::class,
 ]);
 
 /*
@@ -131,21 +131,22 @@ $app->routeMiddleware([
 */
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
+$app->register(App\Providers\EventServiceProvider::class);
 
 /*
  * Package Service Providers...
  */
-$app->register(LumenServiceProvider::class);
-$app->register(LumenRepositoryServiceProvider::class);
+$app->register(\Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(\Illuminate\Redis\RedisServiceProvider::class);
+$app->register(\Spatie\Permission\PermissionServiceProvider::class);
+$app->register(\Jiannei\Enum\Laravel\Providers\ServiceProvider::class);
+$app->register(\Jiannei\Response\Laravel\Providers\ServiceProvider::class);
+$app->register(\Jiannei\Logger\Laravel\Providers\ServiceProvider::class);
 
 /*
  * Custom Service Providers.
  */
-$app->register(RepositoryServiceProvider::class);
-$app->register(QueryLoggerServiceProvider::class);
-$app->register(RedisServiceProvider::class);
-$app->register(EnumServiceProvider::class);
+$app->register(App\Providers\RepositoryServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

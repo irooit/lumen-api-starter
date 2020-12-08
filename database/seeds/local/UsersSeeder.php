@@ -9,12 +9,13 @@
  * with this source code in the file LICENSE.
  */
 
-namespace App\Http\Controllers;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Seeder;
 
-use Jiannei\Response\Laravel\ResponseTrait;
-use Laravel\Lumen\Routing\Controller as BaseController;
-
-class Controller extends BaseController
+class UsersSeeder extends Seeder
 {
-    use ResponseTrait;
+    public function run()
+    {
+        UserFactory::new()->count(10)->create();
+    }
 }
